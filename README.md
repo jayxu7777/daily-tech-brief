@@ -2,7 +2,13 @@
 
 **English** · **[简体中文](README.zh-CN.md)**
 
-Let your local [Claude Code](https://claude.com/claude-code) push a daily Top-3 digest of **AI projects / AI papers / tech headlines / funding news** straight to your Telegram every morning at 8am.
+Let your local [Claude Code](https://claude.com/claude-code) push a daily digest straight to your Telegram every morning at 8am:
+
+- **Top 3** AI projects (GitHub trending)
+- **Top 3** AI papers (HuggingFace daily)
+- **Top 3** tech headlines (Hacker News)
+- **Top 3** funding / market news (US tech VC + crypto)
+- **Top 10** hottest crypto/blockchain posts on X — English original + Chinese translation (sent as a second message)
 
 No backend. No server. Everything runs inside your local Claude Code.
 
@@ -15,8 +21,9 @@ Claude Code (cron trigger)
        ├─ WebFetch  huggingface.co/papers
        ├─ WebFetch  news.ycombinator.com
        ├─ WebSearch tech funding / crypto
-       ├─ Claude picks Top 3 + writes commentary
-       └─ curl → Telegram Bot API
+       ├─ WebFetch  lunarcrush.com + cryptopanic.com (X-on-crypto)
+       ├─ Claude picks Top items + writes Chinese commentary / translation
+       └─ curl → Telegram Bot API (2 messages: main digest + crypto X feed)
 ```
 
 The whole thing is one prompt — [`.claude/commands/daily-brief.md`](.claude/commands/daily-brief.md). Claude reads it, fetches sources, ranks items, summarizes, and pushes. No code to maintain.

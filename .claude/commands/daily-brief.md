@@ -96,7 +96,7 @@ Style rules:
 - No filler ("今天我们来看看…"). Get to the point.
 - Don't fabricate. If a category has fewer than 3 strong items, say so.
 
-## Step 5 — Push to Telegram
+## Step 5 — Push the main digest to Telegram
 
 Write the digest to `/tmp/daily-brief-$(date +%Y-%m-%d).txt`, then send via `curl`:
 
@@ -109,4 +109,58 @@ curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" 
 
 Source the `.env` file first so the variables are available: `set -a; source .env; set +a`.
 
-If the API returns `"ok":true`, report success to the user with the date and item counts. If it returns an error, show the error message.
+If the API returns `"ok":true`, continue to Step 6. Otherwise show the error and stop.
+
+## Step 6 — Crypto/X Top 10 (separate message)
+
+After the main digest is delivered, fetch the **Top 10 hottest crypto / blockchain posts circulating on X today** and push them as a second Telegram message.
+
+> **Why a second message**: Telegram's 4096-char limit per message — combined with 10 items each having English original + Chinese translation + commentary, the crypto block needs its own message.
+
+### Sources (no X API needed)
+
+X.com itself blocks unauthenticated WebFetch and the API is paid. Use these aggregators instead — they surface the same hot crypto X content:
+
+1. **WebFetch** https://lunarcrush.com/categories/cryptocurrencies/social — LunarCrush ranks crypto X posts by social engagement.
+2. **WebFetch** https://cryptopanic.com/?filter=hot — CryptoPanic "hot" feed aggregates trending crypto news incl. X KOL posts.
+3. (Fallback) **WebSearch** query: `crypto twitter trending today {{today_date}}` — backfill if either source is down.
+
+Pick the **10 highest-signal items** across these sources. Prefer named KOLs / projects over anonymous shitposts. Drop pure shilling. Diversify topics (BTC/ETH macro, L1/L2, DeFi, memecoin, regulation, on-chain analytics).
+
+### Format (second message)
+
+```
+🪙 Crypto on X · Top 10 · YYYY-MM-DD
+━━━━━━━━━━━━━━━━━━━
+
+1️⃣ <Author handle / source>
+EN: <original English headline or tweet quote>
+中: <Chinese translation, faithful, no editorial tone>
+💡 <1 short Chinese sentence — why it matters>
+🔗 <link>
+
+2️⃣ ...
+...
+🔟 ...
+
+━━━━━━━━━━━━━━━━━━━
+📊 今日加密一句话
+━━━━━━━━━━━━━━━━━━━
+<one-line Chinese summary of the dominant crypto narrative today>
+```
+
+Style rules for this message:
+- Original headline must be in **English**. If the source is in another language, translate to English first, then to Chinese.
+- Chinese translation should be literal, not summarized. The 💡 line is where commentary goes.
+- Keep this message under 4000 chars total. If items run long, trim the 💡 commentary first.
+
+### Push it
+
+```bash
+curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+  --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+  --data-urlencode "disable_web_page_preview=true" \
+  --data-urlencode "text@/tmp/crypto-x-$(date +%Y-%m-%d).txt"
+```
+
+If the API returns `"ok":true` for both messages, report success with date + counts (e.g. "✓ main digest 12 items + crypto X 10 items pushed to Telegram"). Otherwise show whichever step failed.

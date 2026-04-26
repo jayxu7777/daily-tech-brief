@@ -2,7 +2,13 @@
 
 **[English](README.md)** · **简体中文**
 
-每天早上 8 点，让 [Claude Code](https://claude.com/claude-code) 自动把 **AI 项目 / AI 论文 / 科技热点 / 投资新闻** 各 Top 3 推送到你的 Telegram。
+每天早上 8 点，让 [Claude Code](https://claude.com/claude-code) 自动把每日资讯推送到你的 Telegram：
+
+- AI 项目 **Top 3**（GitHub trending）
+- AI 论文 **Top 3**（HuggingFace daily）
+- 科技热点 **Top 3**（Hacker News）
+- 投资新闻 **Top 3**（美股科技 VC + Crypto）
+- X 上最热加密货币帖子 **Top 10** —— 英文原文 + 中文翻译（单独第二条消息推送）
 
 无需后端，无需服务器。一切跑在你本地的 Claude Code 里。
 
@@ -15,8 +21,9 @@ Claude Code (cron trigger)
        ├─ WebFetch  huggingface.co/papers
        ├─ WebFetch  news.ycombinator.com
        ├─ WebSearch 科技投融资 / 加密货币
-       ├─ Claude 自己挑 Top 3 + 写中文点评
-       └─ curl → Telegram Bot API
+       ├─ WebFetch  lunarcrush.com + cryptopanic.com（X 加密热帖）
+       ├─ Claude 自己挑 Top + 写中文点评/翻译
+       └─ curl → Telegram Bot API（两条消息：主简报 + Crypto X feed）
 ```
 
 核心是一个写好的 prompt（[`.claude/commands/daily-brief.md`](.claude/commands/daily-brief.md)），Claude 看完会自己抓取、筛选、总结、推送。
