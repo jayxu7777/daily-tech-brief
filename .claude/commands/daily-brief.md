@@ -119,13 +119,24 @@ After the main digest is delivered, fetch the **Top 10 hottest crypto / blockcha
 
 ### Sources (no X API needed)
 
-X.com itself blocks unauthenticated WebFetch and the API is paid. Use these aggregators instead — they surface the same hot crypto X content:
+X.com blocks unauthenticated WebFetch and the API is paid. Most aggregators (LunarCrush / CryptoPanic / CoinDesk / The Block) also return 403 to unauthenticated requests as of 2026. The reliable approach is:
 
-1. **WebFetch** https://lunarcrush.com/categories/cryptocurrencies/social — LunarCrush ranks crypto X posts by social engagement.
-2. **WebFetch** https://cryptopanic.com/?filter=hot — CryptoPanic "hot" feed aggregates trending crypto news incl. X KOL posts.
-3. (Fallback) **WebSearch** query: `crypto twitter trending today {{today_date}}` — backfill if either source is down.
+**Primary (must work)**:
+1. **WebFetch** https://crypto.news/ — front page surfaces KOL takes (Saylor, Novogratz, Garlinghouse, etc.), institutional moves, regulatory news, on-chain events. Stable, no auth required.
+2. **WebSearch** query: `crypto twitter trending today {{today_date}}` — pulls X-referenced commentary indexed by Google.
 
-Pick the **10 highest-signal items** across these sources. Prefer named KOLs / projects over anonymous shitposts. Drop pure shilling. Diversify topics (BTC/ETH macro, L1/L2, DeFi, memecoin, regulation, on-chain analytics).
+**Optional (try, skip silently on 403/error — do NOT retry)**:
+3. WebFetch https://lunarcrush.com/categories/cryptocurrencies/social
+4. WebFetch https://cryptopanic.com/?filter=hot
+5. WebFetch https://www.theblock.co/latest
+
+If primary sources succeed, you have enough material. Don't block the whole pipeline waiting on optional sources.
+
+Pick the **10 highest-signal items**. Selection rubric:
+- Prefer named KOLs / projects / institutions (Saylor, Vitalik, Novogratz, BlackRock, JPMorgan, Aave, Solana Foundation, etc.) over anonymous chatter.
+- Drop pure price-shilling / "to the moon" content.
+- Diversify topics: BTC macro, ETH/L2, Solana/alt-L1, DeFi, RWA/tokenization, regulation, security/exploits, on-chain analytics.
+- If the day's news is light, 8–10 items is fine — don't pad to 10 with weak content.
 
 ### Format (second message)
 
@@ -153,6 +164,7 @@ Style rules for this message:
 - Original headline must be in **English**. If the source is in another language, translate to English first, then to Chinese.
 - Chinese translation should be literal, not summarized. The 💡 line is where commentary goes.
 - Keep this message under 4000 chars total. If items run long, trim the 💡 commentary first.
+- If LunarCrush / CryptoPanic / X were inaccessible (likely), append a short footer noting that today's content was sourced from crypto.news + WebSearch — transparency over fake completeness.
 
 ### Push it
 
